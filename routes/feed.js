@@ -18,5 +18,6 @@ router.post(
   ],
   feedController.createPost
 );
-
+// GET /feed/posts/t345zj#342
+router.get('/posts/:postId', feedController.getOnePost)
 module.exports = router;
