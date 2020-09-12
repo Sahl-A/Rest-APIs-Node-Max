@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -12,6 +13,9 @@ const app = express();
 
 // When we get data as json. It uses application/json format
 app.use(bodyParser.json()); // application/json
+
+// Serve images statically
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // By default, all the clients are restricted to access the server/REST api endpoints
 // This is because of CORS, we solve this by allowing using headers in the response
@@ -28,6 +32,15 @@ app.use((req, res, next) => {
 ///// Routes /////
 //////////////////
 app.use("/feed", feedRoutes);
+
+// Error
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  res.status(status).json({
+    message: error.message,
+  });
+});
 
 ///// Add Mongoose /////
 ////////////////////////

@@ -26,10 +26,9 @@ exports.createPost = async (req, res, next) => {
   // Return Error if the validation result has errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({
-      message: "Validation failed, incorrect input",
-      errors: errors.array(),
-    });
+    const error = new Error('Validation failed, incorrect input');
+    error.statusCode = 422;
+    next(error)
   }
 
   // Add the data to the DB
@@ -50,6 +49,9 @@ exports.createPost = async (req, res, next) => {
     });
   } catch (err) {
     // ERR when saving the new post to DB
-    console.log(err);
+    if(!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 };
