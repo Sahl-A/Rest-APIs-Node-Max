@@ -35,11 +35,19 @@ exports.createPost = async (req, res, next) => {
     next(error);
   }
 
+  // Return Error if the file is not found
+  if(!req.file) {
+    const error = new Error('No image Provided')
+    error.statusCode = 422;
+    next(error);
+  }
+  const imageUrl = req.file.path;
+
   // Add the data to the DB
   const newPost = new Post({
     title,
     content,
-    imageUrl: "images/Mongo.jpg",
+    imageUrl: imageUrl,
     creator: {
       name: "Sahl",
     },

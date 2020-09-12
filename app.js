@@ -2,10 +2,37 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const multer = require('multer');
 
 const feedRoutes = require("./routes/feed");
 
 const app = express();
+
+///////////////// Disk Storage /////////////////
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    const currData = new Date().toDateString().split(" ").join("-");
+    cb(null, currData + "-" + file.originalname);
+  },
+});
+
+// Filter uploaded files based on its type
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+
 ///// Parse the body //////
 ////////////////////////////
 // When we get data from <form>. It uses x-www-form-urlencoded format
@@ -16,6 +43,9 @@ app.use(bodyParser.json()); // application/json
 
 // Serve images statically
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+// Use multer to upload files 
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 
 // By default, all the clients are restricted to access the server/REST api endpoints
 // This is because of CORS, we solve this by allowing using headers in the response
