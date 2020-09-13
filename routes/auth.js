@@ -4,6 +4,7 @@ const express = require("express");
 const { body } = require("express-validator");
 // Get the user to check email existance
 const User = require("../models/user");
+
 const authControllers = require("../controllers/auth");
 
 const router = express.Router();
@@ -32,6 +33,6 @@ router.put(
   authControllers.signup
 );
 
-router.post('/login', authControllers.login)
+router.post("/login", authControllers.login);
 
 module.exports = router;

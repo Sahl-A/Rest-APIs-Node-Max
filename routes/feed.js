@@ -4,11 +4,13 @@ const feedController = require("../controllers/feed");
 
 // To validate the routes
 const { body } = require("express-validator");
+// To authenticate routes
+const isAuth = require("../middlewares/is-auth");
 
 const router = express.Router();
 
 // GET /feed/posts
-router.get("/posts", feedController.getPosts);
+router.get("/posts", isAuth, feedController.getPosts);
 // POST /feed/posts
 router.post(
   "/post",
@@ -30,5 +32,5 @@ router.put(
   feedController.updatePost
 );
 // DELETE /feed/posts/483HF#$fd
-router.delete('/posts/:postId', feedController.deletePost);
+router.delete("/posts/:postId", feedController.deletePost);
 module.exports = router;

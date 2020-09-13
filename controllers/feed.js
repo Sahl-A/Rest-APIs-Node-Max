@@ -145,28 +145,30 @@ exports.deletePost = async (req, res, next) => {
     // Get the post from DB to check if it is the same user who created it,
     const post = await Post.findById(postId);
     // If there is no such post
-    if(!post) {
-      const err = new Error('Cannot find the post');
+    if (!post) {
+      const err = new Error("Cannot find the post");
       err.statusCode = 404;
       next(err);
-    } 
+    }
     // Check if it is the same user
     // Delete the post
     try {
       // Clear the image from file system
-      clearImage(post.imageUrl)
+      clearImage(post.imageUrl);
       await Post.findByIdAndRemove(postId);
-      return res.status(200).json({message: 'Post has been deleted successfully'})
+      return res
+        .status(200)
+        .json({ message: "Post has been deleted successfully" });
     } catch (err) {
       // ERR when getting the post from DB
-    if(!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     }
   } catch (err) {
     // ERR when getting the post from DB
-    if(!err.statusCode) {
+    if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
