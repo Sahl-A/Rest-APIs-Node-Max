@@ -4,6 +4,7 @@ const fs = require("fs");
 const { validationResult } = require("express-validator");
 // Get the DB post model
 const Post = require("../models/post");
+const User = require("../models/user");
 
 // When using GET /feed/posts
 exports.getPosts = async (req, res, next) => {
@@ -50,17 +51,28 @@ exports.createPost = async (req, res, next) => {
     title,
     content,
     imageUrl: imageUrl,
-    creator: {
-      name: "Sahl",
-    },
+    creator: req.userId,
   });
   try {
     const post = await newPost.save();
-    // Send the response
-    res.status(201).json({
-      message: "Post created successfully",
-      post,
-    });
+    try {
+      // Get the user to save the post to it
+      const user = await User.findById(req.userId);
+      user.posts.push(post);
+      await user.save();
+      // Send the response
+      res.status(201).json({
+        message: "Post created successfully",
+        post,
+        creator: { _id: user._id, name: user.name },
+      });
+    } catch (err) {
+      // ERR when getting the user from DB
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    }
   } catch (err) {
     // ERR when saving the new post to DB
     if (!err.statusCode) {
