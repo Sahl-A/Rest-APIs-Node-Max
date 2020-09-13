@@ -2,6 +2,8 @@
 const bcrypt = require("bcrypt");
 // Get the validation result
 const { validationResult } = require("express-validator");
+// Generate the JWT token
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
@@ -69,6 +71,16 @@ exports.login = async (req, res, next) => {
         return next(error);
       }
       // Generate the JWT token
+      const token = jwt.sign(
+        { email: user.email, userId: user._id },
+        "SECRET KEY TO GENERATEE THE TOKEN<, SHOULD BE COMPLICATED",
+        { expiresIn: "1h" }
+      );
+      // Send the token back
+      res.status(200).json({
+        token,
+        userId: user._id,
+      });
     } catch (err) {
       // ERR when comparing the password with the stored hash
       if (!err.statusCode) {
