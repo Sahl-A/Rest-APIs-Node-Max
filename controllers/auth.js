@@ -46,3 +46,41 @@ exports.signup = async (req, res, next) => {
     next(err);
   }
 };
+
+// When clicking on login button
+exports.login = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  let loadedUser;
+  try {
+    const user = await User.findOne({ email });
+    // If there is no user with this email
+    if (!user) {
+      const error = new Error(`A user with this email could not be found`);
+      error.statusCode = 401;
+      return next(error);
+    }
+    try {
+      const isPassEqual = await bcrypt.compare(password, user.password);
+      // If the passwords do not match
+      if (!isPassEqual) {
+        const error = new Error(`Wrong Password`);
+        error.statusCode = 401;
+        return next(error);
+      }
+      // Generate the JWT token
+    } catch (err) {
+      // ERR when comparing the password with the stored hash
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    }
+  } catch (err) {
+    // ERR when getting a user from DB
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
