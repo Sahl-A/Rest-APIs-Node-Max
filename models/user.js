@@ -10,13 +10,13 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  naem: {
+  name: {
     type: String,
     required: true,
   },
   status: {
     type: String,
-    required: true,
+    default: "I'm a new user",
   },
   posts: [
     {
