@@ -14,6 +14,7 @@ router.get("/posts", isAuth, feedController.getPosts);
 // POST /feed/posts
 router.post(
   "/post",
+  isAuth,
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
@@ -21,10 +22,11 @@ router.post(
   feedController.createPost
 );
 // GET /feed/posts/t345zj#342
-router.get("/posts/:postId", feedController.getOnePost);
+router.get("/posts/:postId", isAuth, feedController.getOnePost);
 // PUT /feed/posts/34fgD#@%sg
 router.put(
   "/post/:postId",
+  isAuth,
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
