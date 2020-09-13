@@ -29,5 +29,6 @@ router.put(
   ],
   feedController.updatePost
 );
-
+// DELETE /feed/posts/483HF#$fd
+router.delete('/posts/:postId', feedController.deletePost);
 module.exports = router;
