@@ -22,7 +22,7 @@ router.post(
   feedController.createPost
 );
 // GET /feed/posts/t345zj#342
-router.get("/posts/:postId", isAuth, feedController.getOnePost);
+router.get("/post/:postId", isAuth, feedController.getOnePost);
 // PUT /feed/posts/34fgD#@%sg
 router.put(
   "/post/:postId",
@@ -34,5 +34,5 @@ router.put(
   feedController.updatePost
 );
 // DELETE /feed/posts/483HF#$fd
-router.delete("/posts/:postId", feedController.deletePost);
+router.delete("/post/:postId", isAuth, feedController.deletePost);
 module.exports = router;
